@@ -16,11 +16,11 @@ def get_now():
 class Constants:
     workdates = {
         '0': {
-            'start': datetime.datetime(2016, 9, 9, 0, 01),
-            'end': datetime.datetime(2016, 9, 13, 23, 59),
+            'start': datetime.datetime(2016, 10, 31, 0, 1),
+            'end': datetime.datetime(2016, 11, 11, 23, 59),
             },
         '1': {
-            'start': datetime.datetime(2016, 7, 12, 0, 01),
+            'start': datetime.datetime(2016, 7, 12, 0, 1),
             'end': datetime.datetime(2016, 7, 21, 23, 59),
             },
         }
@@ -31,7 +31,7 @@ class Constants:
     }
 
 class Treatment(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     wage = models.CharField("Wage Rate", max_length=128)
     tutorial = models.IntegerField(default=0)
     timezone = models.CharField(max_length=128, null=True)
@@ -74,7 +74,7 @@ class Treatment(models.Model):
                     continue
                 if curr.date() != prev.date():
                     day += 1
-        print "logins: {}".format(day)
+        print("logins: {}".format(day))
         frame = self.frameorder[day]
         return frame
 
@@ -100,8 +100,8 @@ class Image(models.Model):
         ordering = ['order']
 
 class WorkTimer(models.Model):
-    user = models.ForeignKey(User)
-    task = models.ForeignKey("Task", null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    task = models.ForeignKey("Task", null=True, on_delete=models.CASCADE)
     page = models.CharField(max_length=28, null=True)
     value = models.IntegerField()
     token = models.CharField(max_length=256)
@@ -170,8 +170,8 @@ class Task(models.Model):
 
     YEARS = [(x,x) for x in range(2000, timezone.now().year+1)]
 
-    user = models.ForeignKey(User)
-    image = models.ForeignKey(Image)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
     finished = models.IntegerField(choices=CHOICES, default=0)
 
     street_nam = models.CharField('Street name (and # if available)', max_length=512, null=True)
@@ -253,8 +253,8 @@ def get_now_niave():
     return datetime.datetime.now()
 
 class EventLog(models.Model):
-    user = models.ForeignKey(User)
-    task = models.ForeignKey(Task, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, null=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
     description = models.CharField(max_length=512, blank=True)
     timestamp = models.DateTimeField(default=get_now_niave)

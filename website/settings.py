@@ -21,10 +21,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", 'devkey')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.getenv("MYAPP_DEBUG", False))
+DEBUG = True
 
 # Application definition
 
@@ -39,16 +39,16 @@ INSTALLED_APPS = (
     'request',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'request.middleware.RequestMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 )
 
 ROOT_URLCONF = 'website.urls'
@@ -96,22 +96,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-DATABASES['default'] = dj_database_url.config()
-
-DATABASES['local'] = {
-    'NAME': 'csr',
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'USER': 'postgres',
-    'PASSWORD': 'joseph',
-    'HOST': '127.0.0.1',
-    'PORT': '5432',
-}
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 #ALLOW ALL HOSTS
-ALLOWED_HOSTS = ['.herokuapp.com', '.hhlportal.com']
+ALLOWED_HOSTS = ['localhost', '.herokuapp.com', '.hhlportal.com']
 
 
 # Static files (CSS, JavaScript, Images)
@@ -124,7 +112,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_REDIRECT_URL = '/images'
 LOGIN_URL = '/login'

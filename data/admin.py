@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import WorkTimer, Task, EventLog, Treatment
 from django.contrib.auth.models import User
-import user_patch
+import data.user_patch
 # Register your models here.
 
 class TimeSheet(User):

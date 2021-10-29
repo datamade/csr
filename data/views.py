@@ -1,16 +1,16 @@
-from django.shortcuts import render, render_to_response, redirect
-from django.core.urlresolvers import reverse
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import Image, Task, EventLog, WorkTimer, Constants
+from data.models import Image, Task, EventLog, WorkTimer, Constants
 from django.forms.models import inlineformset_factory, modelform_factory
-from .decorators import timeout_logging, check_access
-from forms import MenuItemForm
+from data.decorators import timeout_logging, check_access
+from data.forms import MenuItemForm
 from django.db import models
 from django import forms
 from django.conf import settings
-import user_patch
+import data.user_patch
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
 
@@ -41,7 +41,7 @@ def list_images(request):
 
 def my_login(request, *args, **kwargs):
     kwargs = {'template_name': "login.html",}
-    response = auth_views.login(request, **kwargs)
+    response = auth_views.LoginView(request)
     if response.status_code == 302:
         user = User.objects.get(username=request.POST['username'])
         event = EventLog(user_id=user.id, name="login", frame=user.treatment.get_frame())
