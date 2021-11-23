@@ -17,6 +17,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/csr
       DJANGO_MANAGEPY_MIGRATE: 'on'
+      DJANGO_SECRET_KEY: foobar
     entrypoint: /app/scripts/docker-entrypoint.sh
     command: python manage.py runserver 0.0.0.0:8000
 
