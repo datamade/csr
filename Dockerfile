@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app
 
 ENV DJANGO_SECRET_KEY 'foobar'
-RUN python manage.py collecstatic --noinput
+RUN python manage.py collectstatic --noinput
