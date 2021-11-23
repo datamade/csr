@@ -1,0 +1,40 @@
+version: '2.4'
+
+services:
+  app:
+    image: csr
+    container_name: csr
+    build: .
+    stdin_open: true
+    tty: true
+    ports:
+      - 8000:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/csr
+      DJANGO_MANAGEPY_MIGRATE: 'on'
+    entrypoint: /app/scripts/docker-entrypoint.sh
+    command: python manage.py runserver 0.0.0.0:8000
+
+  postgres:
+    container_name: csr-postgres
+    image: postgres:11
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=csr
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - csr-db-data:/var/lib/postgresql/data
+    ports:
+      - 32001:5432
+
+volumes:
+  csr-db-data:
